@@ -12,7 +12,15 @@ export class NakprcLiquidBlob {
     this.colorA = opts.colorA || el.dataset.colorA || "rgba(140, 215, 250, 0.85)";
     this.colorB = opts.colorB || el.dataset.colorB || "rgba(20, 110, 190, 0.85)";
 
-    this.imageUrl = opts.image || el.dataset.image;
+    let childImg = el.querySelector('.nakprc-liquid-img');
+    if (childImg && childImg.tagName === 'IMG') {
+      this.imageUrl = childImg.src;
+      childImg.style.opacity = '0'; // Hide it but keep it in DOM for React
+      childImg.style.pointerEvents = 'none';
+    } else {
+      this.imageUrl = opts.image || el.dataset.image;
+    }
+    
     this.imageAlpha = parseFloat(opts.imageAlpha || el.dataset.imageAlpha || "1");
     if (this.imageUrl) {
       this.img = new Image();
@@ -216,6 +224,16 @@ export class NakprcLiquidBlob {
       ctx.globalAlpha = this.imageAlpha;
       const imgRatio = this.img.width / this.img.height;
       const canvasRatio = w / h;
+      
+      // Calculate average velocity for parallax
+      let vx = 0, vy = 0;
+      for (let i = 0; i < n; i++) {
+        vx += this.base[i].nx * this.vel[i];
+        vy += this.base[i].ny * this.vel[i];
+      }
+      vx = vx / (n * 0.1);
+      vy = vy / (n * 0.1);
+      
       let drawW = w, drawH = h, drawX = 0, drawY = 0;
       
       if (imgRatio > canvasRatio) {
@@ -225,6 +243,11 @@ export class NakprcLiquidBlob {
         drawH = w / imgRatio;
         drawY = (h - drawH) / 2;
       }
+      
+      // Add parallax shift based on wobble velocity
+      drawX += vx * 0.8;
+      drawY += vy * 0.8;
+      
       ctx.drawImage(this.img, drawX, drawY, drawW, drawH);
       ctx.globalAlpha = 1.0;
 
