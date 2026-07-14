@@ -32,8 +32,15 @@ export class NakprcLiquidLens {
   }
 
   _bindEvents() {
+    const checkDraggable = () => 
+      this.el.id === 'dragable' || 
+      this.el.id === 'draggable' || 
+      this.el.classList.contains('nakprc-liquid-draggable') || 
+      this.el.classList.contains('nakprc-liquid-dragabale');
+
     this._onDown = (e) => {
       if (e.button !== 0 && e.type !== 'touchstart') return; 
+      if (!checkDraggable()) return;
       this.dragging = true;
       this.el.setPointerCapture?.(e.pointerId);
       this._startPointer = { x: e.clientX, y: e.clientY };
@@ -47,7 +54,11 @@ export class NakprcLiquidLens {
     };
     this._onUp = () => {
       this.dragging = false;
-      this.el.style.cursor = "grab";
+      if (checkDraggable()) {
+        this.el.style.cursor = "grab";
+      } else {
+        this.el.style.cursor = "";
+      }
       // Spring back to original position
       this.target = { x: 0, y: 0 };
     };
@@ -55,7 +66,9 @@ export class NakprcLiquidLens {
     this.el.addEventListener("pointerdown", this._onDown);
     window.addEventListener("pointermove", this._onMove);
     window.addEventListener("pointerup", this._onUp);
-    if (!this.el.style.cursor) this.el.style.cursor = "grab";
+    if (!this.el.style.cursor && checkDraggable()) {
+      this.el.style.cursor = "grab";
+    }
   }
 
   _tick() {
