@@ -12,14 +12,7 @@ export class NakprcLiquidBlob {
     this.colorA = opts.colorA || el.dataset.colorA || "rgba(140, 215, 250, 0.85)";
     this.colorB = opts.colorB || el.dataset.colorB || "rgba(20, 110, 190, 0.85)";
 
-    let childImg = el.querySelector('.nakprc-liquid-img');
-    if (childImg && childImg.tagName === 'IMG') {
-      this.imageUrl = childImg.src;
-      childImg.style.opacity = '0'; // Hide it but keep it in DOM for React
-      childImg.style.pointerEvents = 'none';
-    } else {
-      this.imageUrl = opts.image || el.dataset.image;
-    }
+    this.imageUrl = opts.image || el.dataset.image;
     
     this.imageAlpha = parseFloat(opts.imageAlpha || el.dataset.imageAlpha || "1");
     if (this.imageUrl) {
@@ -300,12 +293,33 @@ export class NakprcLiquidBlob {
     vx = vx / (this.points * 0.1);
     vy = vy / (this.points * 0.1);
 
+    const n = this.points;
     const liquidChildren = this.el.querySelectorAll('.nakprc-liquid-img, .nakprc-liquid-text');
+    
+    // Apply parallax, skew, and dynamic wobbly clip-path
     liquidChildren.forEach(child => {
       const px = vx * 0.8;
       const py = vy * 0.8;
       const sx = vx * 0.3;
       const sy = vy * 0.3;
+      
+      // Compute clip-path coordinates relative to the DOM element (without margin, offset by translation)
+      const liveDom = this.base.map((b, i) => ({
+        x: b.x + b.nx * this.disp[i] - this.margin - px,
+        y: b.y + b.ny * this.disp[i] - this.margin - py,
+      }));
+
+      let pathStr = `M ${(liveDom[0].x + liveDom[n - 1].x) / 2} ${(liveDom[0].y + liveDom[n - 1].y) / 2}`;
+      for (let i = 0; i < n; i++) {
+        const cur = liveDom[i];
+        const next = liveDom[(i + 1) % n];
+        const mid = { x: (cur.x + next.x) / 2, y: (cur.y + next.y) / 2 };
+        pathStr += ` Q ${cur.x} ${cur.y} ${mid.x} ${mid.y}`;
+      }
+      pathStr += ' Z';
+
+      child.style.clipPath = `path('${pathStr}')`;
+      child.style.webkitClipPath = `path('${pathStr}')`;
       child.style.transform = `translate(${px}px, ${py}px) skew(${sx}deg, ${sy}deg)`;
     });
 
