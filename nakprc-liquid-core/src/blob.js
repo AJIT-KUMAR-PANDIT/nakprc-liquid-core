@@ -264,6 +264,28 @@ export class NakprcLiquidBlob {
     this._t = t;
     this._step();
     this._draw();
+    
+    // Sync child liquid elements (parallax and skew)
+    let vx = 0;
+    let vy = 0;
+    for (let i = 0; i < this.points; i++) {
+      vx += this.base[i].nx * this.vel[i];
+      vy += this.base[i].ny * this.vel[i];
+    }
+    
+    // Scale down the accumulated velocity for subtle parallax
+    vx = vx / (this.points * 0.1);
+    vy = vy / (this.points * 0.1);
+
+    const liquidChildren = this.el.querySelectorAll('.nakprc-liquid-img, .nakprc-liquid-text');
+    liquidChildren.forEach(child => {
+      const px = vx * 0.8;
+      const py = vy * 0.8;
+      const sx = vx * 0.3;
+      const sy = vy * 0.3;
+      child.style.transform = `translate(${px}px, ${py}px) skew(${sx}deg, ${sy}deg)`;
+    });
+
     this._raf = requestAnimationFrame(this._tick.bind(this));
   }
 
