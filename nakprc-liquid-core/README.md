@@ -18,6 +18,11 @@ import { initNakprcDOM } from 'nakprc-liquid-core';
 initNakprcDOM();
 ```
 
+## Interactivity & Motion Sync
+
+- **Draggable Components**: Elements using `LIQUID_LENS` are draggable *only* if they have the ID `draggable` (or `dragable`) or the class `nakprc-liquid-draggable`. 
+- **Parallax Sync**: Any `LIQUID_IMG` or `LIQUID_TEXT` child elements inside a `LIQUID_GLASS` (blob) or `LIQUID_LENS` will automatically translate and skew in sync with the fluid's physical motions when hovered or poked.
+
 ## Component Usage
 
 You can import the class name constants directly into your components. Because `initNakprcDOM()` is watching the DOM, they will instantly work the moment they are rendered!
