@@ -16,25 +16,7 @@ const LIQUID_CSS = `
   position: relative;
   z-index: 1;
 }
-.nakprc-liquid-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1.4;
-  letter-spacing: 0.02em;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 12px rgba(0, 0, 0, 0.4);
-  padding: 6px 14px;
-  border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  pointer-events: none;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
+
 .nakprc-liquid-lens {
   --nakprc-lens-strength: 46; 
   --nakprc-lens-blur: 2px;
@@ -53,6 +35,19 @@ const LIQUID_CSS = `
     transparent 50%
   );
   z-index: 2;
+}
+.nakprc-liquid-img {
+  will-change: transform;
+  display: block;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.nakprc-liquid-text {
+  will-change: transform;
+  display: inline-block;
+  pointer-events: none;
 }
 `;
 

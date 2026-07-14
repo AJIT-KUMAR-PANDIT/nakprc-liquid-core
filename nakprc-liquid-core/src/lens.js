@@ -48,6 +48,8 @@ export class NakprcLiquidLens {
     this._onUp = () => {
       this.dragging = false;
       this.el.style.cursor = "grab";
+      // Spring back to original position
+      this.target = { x: 0, y: 0 };
     };
 
     this.el.addEventListener("pointerdown", this._onDown);
@@ -78,6 +80,16 @@ export class NakprcLiquidLens {
     const hy = 26 - this.vel.y * 1.4;
     this.el.style.setProperty("--nakprc-lens-hx", `${hx}%`);
     this.el.style.setProperty("--nakprc-lens-hy", `${hy}%`);
+
+    // Sync child liquid elements (parallax and skew)
+    const liquidChildren = this.el.querySelectorAll('.nakprc-liquid-img, .nakprc-liquid-text');
+    liquidChildren.forEach(child => {
+      const px = this.vel.x * 0.8;
+      const py = this.vel.y * 0.8;
+      const sx = this.vel.x * 0.3;
+      const sy = this.vel.y * 0.3;
+      child.style.transform = `translate(${px}px, ${py}px) skew(${sx}deg, ${sy}deg)`;
+    });
 
     this._raf = requestAnimationFrame(this._tick.bind(this));
   }
