@@ -23,6 +23,13 @@ initNakprcDOM();
 - **Draggable Components**: Elements using `LIQUID_LENS` are draggable *only* if they have the ID `draggable` (or `dragable`) or the class `nakprc-liquid-draggable`. 
 - **Parallax Sync**: Any `LIQUID_IMG` or `LIQUID_TEXT` child elements inside a `LIQUID_GLASS` (blob) or `LIQUID_LENS` will automatically translate and skew in sync with the fluid's physical motions when hovered or poked.
 
+## Image Handling (Covers)
+
+There are two ways to add a background image to your liquid containers:
+
+1. **Canvas Blob Masking (Best for `LIQUID_GLASS`)**: Pass `data-image="url"` directly to the container. The liquid physics engine will draw the image inside the `<canvas>`, perfectly masking it to the wobbly, physics-driven perimeter of the blob.
+2. **DOM Cover (Best for `LIQUID_LENS`)**: Place an `<img className={LIQUID_IMG} src="..." />` inside the container. It will automatically act as an absolute background cover. Be sure to add `overflow: hidden` to the parent container if you want to clip its corners to the container's border radius.
+
 ## Component Usage
 
 You can import the class name constants directly into your components. Because `initNakprcDOM()` is watching the DOM, they will instantly work the moment they are rendered!
