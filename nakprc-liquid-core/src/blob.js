@@ -309,15 +309,17 @@ export class NakprcLiquidBlob {
         y: b.y + b.ny * this.disp[i] - this.margin - py,
       }));
 
-      let polyStr = 'polygon(';
-      for (let i = 0; i < n; i++) {
-        polyStr += `${liveDom[i].x}px ${liveDom[i].y}px`;
-        if (i < n - 1) polyStr += ', ';
+      if (child.classList.contains('nakprc-liquid-img')) {
+        let polyStr = 'polygon(';
+        for (let i = 0; i < n; i++) {
+          polyStr += `${liveDom[i].x}px ${liveDom[i].y}px`;
+          if (i < n - 1) polyStr += ', ';
+        }
+        polyStr += ')';
+        child.style.clipPath = polyStr;
+        child.style.webkitClipPath = polyStr;
       }
-      polyStr += ')';
-
-      child.style.clipPath = polyStr;
-      child.style.webkitClipPath = polyStr;
+      
       child.style.transform = `translate(${px}px, ${py}px) skew(${sx}deg, ${sy}deg)`;
     });
 
