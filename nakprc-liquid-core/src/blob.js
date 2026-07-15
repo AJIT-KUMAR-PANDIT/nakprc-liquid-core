@@ -309,17 +309,15 @@ export class NakprcLiquidBlob {
         y: b.y + b.ny * this.disp[i] - this.margin - py,
       }));
 
-      let pathStr = `M ${(liveDom[0].x + liveDom[n - 1].x) / 2} ${(liveDom[0].y + liveDom[n - 1].y) / 2}`;
+      let polyStr = 'polygon(';
       for (let i = 0; i < n; i++) {
-        const cur = liveDom[i];
-        const next = liveDom[(i + 1) % n];
-        const mid = { x: (cur.x + next.x) / 2, y: (cur.y + next.y) / 2 };
-        pathStr += ` Q ${cur.x} ${cur.y} ${mid.x} ${mid.y}`;
+        polyStr += `${liveDom[i].x}px ${liveDom[i].y}px`;
+        if (i < n - 1) polyStr += ', ';
       }
-      pathStr += ' Z';
+      polyStr += ')';
 
-      child.style.clipPath = `path('${pathStr}')`;
-      child.style.webkitClipPath = `path('${pathStr}')`;
+      child.style.clipPath = polyStr;
+      child.style.webkitClipPath = polyStr;
       child.style.transform = `translate(${px}px, ${py}px) skew(${sx}deg, ${sy}deg)`;
     });
 
